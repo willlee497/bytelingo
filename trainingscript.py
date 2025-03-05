@@ -17,7 +17,7 @@ def format_codealpaca(examples):
     instruction = examples["instruction"]
     input_text = examples["input"]
     output_text = examples["output"]
-    if input_text.strip():  # If input is non-empty
+    if input_text.strip():  #If input is non-empty
         text = f"### Instruction:\n{instruction}\n\n### Input:\n{input_text}\n\n### Response:\n{output_text}"
     else:
         text = f"### Instruction:\n{instruction}\n\n### Response:\n{output_text}"
@@ -51,8 +51,8 @@ model = FastLanguageModel.get_peft_model(
 #define Trainer
 trainer = SFTTrainer(
     model=model,
-    train_dataset=dataset["train"],  # Use the preprocessed train split
-    dataset_text_field="text",  # Specify the formatted "text" field
+    train_dataset=dataset["train"],  #Use the preprocessed train split
+    dataset_text_field="text",  #Specify the formatted "text" field
     max_seq_length=max_seq_length,
     tokenizer=tokenizer,
     args=TrainingArguments(
