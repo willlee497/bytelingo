@@ -3,16 +3,16 @@ from trl import SFTTrainer
 from transformers import TrainingArguments
 from datasets import load_dataset
 
-# Configuration
+#configuration
 max_seq_length = 2048
 dtype = None
 load_in_4bit = True
 model_name = "unsloth/qwen2.5-coder-7b-instruct"
 
-# Load and preprocess CodeAlpaca-20k Dataset
+#load and preprocess CodeAlpaca-20k Dataset
 dataset = load_dataset("sahil2801/CodeAlpaca-20k")
 
-# Format the dataset into a single "text" field
+#format the dataset into a single "text" field
 def format_codealpaca(examples):
     instruction = examples["instruction"]
     input_text = examples["input"]
@@ -25,7 +25,7 @@ def format_codealpaca(examples):
 
 dataset = dataset.map(format_codealpaca, batched=False)
 
-# Load Qwen2.5-Coder-7B-Instruct Model and Tokenizer
+#load Qwen2.5-Coder-7B-Instruct Model and Tokenizer
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name=model_name,
     max_seq_length=max_seq_length,
@@ -33,7 +33,7 @@ model, tokenizer = FastLanguageModel.from_pretrained(
     load_in_4bit=load_in_4bit,
 )
 
-# Add LoRA Adapters
+#add LoRA Adapters
 model = FastLanguageModel.get_peft_model(
     model,
     r=16,
@@ -48,7 +48,7 @@ model = FastLanguageModel.get_peft_model(
     loftq_config=None,
 )
 
-# Define Trainer
+#define Trainer
 trainer = SFTTrainer(
     model=model,
     train_dataset=dataset["train"],  # Use the preprocessed train split
@@ -69,10 +69,10 @@ trainer = SFTTrainer(
     ),
 )
 
-# Fine-Tune the Model
+#Fine-Tune the Model
 trainer.train()
 
-# Save the Fine-Tuned Model
+#Save the Fine-Tuned Model
 model.save_pretrained("fine_tuned_qwen2.5_instruct")
 tokenizer.save_pretrained("fine_tuned_qwen2.5_instruct")
 print("Fine-tuning complete. Model saved to 'fine_tuned_qwen2.5_instruct'")
